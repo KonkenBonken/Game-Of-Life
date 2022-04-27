@@ -34,7 +34,7 @@ void keyPressed() {
   } else if (key == 'r') {
     for (int x = 1; x < pixels.length - 1; x++)
       for (int y = 1; y < pixels[x].length - 1; y++)
-        pixels[x][y] = false;
+        pixels[x][y] = run = false;
   }
 }
 
@@ -52,9 +52,14 @@ void draw() {
   if (mousePressed && inScreen())
     pixels[mouseX / pxSize][mouseY / pxSize] = setTo;
 
-  for (int x = 1; x < pixels.length - 1; x++) {
-    for (int y = 1; y < pixels[x].length - 1; y++) {
-      if (run) {
+  boolean[][] newPixels = new boolean[pixels.length][pixels[0].length];
+  for (int x = 0; x < pixels.length - 0; x++)
+    for (int y = 0; y < pixels[0].length - 0; y++)
+      newPixels[x][y] = !!pixels[x][y];
+
+  if (run)
+    for (int x = 1; x < pixels.length - 1; x++)
+      for (int y = 1; y < pixels[x].length - 1; y++) {
         boolean[] neighbours = {
           pixels[x - 1][y + 1],
           pixels[x][y + 1],
@@ -70,12 +75,15 @@ void draw() {
           if (neighbours[i])
             alive++;
 
-        pixels[x][y] =
+        newPixels[x][y] =
           (pixels[x][y] && (alive == 2 || alive == 3)) ||
           (!pixels[x][y] && alive == 3);
       }
+
+  pixels = newPixels;
+
+  for (int x = 0; x < pixels.length; x++)
+    for (int y = 0; y < pixels[0].length; y++)
       if (pixels[x][y])
         square(x * pxSize, y * pxSize, pxSize);
-    }
-  }
 }
